@@ -6,7 +6,7 @@ Capture **real microphone audio** from the Unitree Go2 robot via WebRTC.
 
 ## Why This Exists
 
-The Go2 publishes an `/audiosender` DDS topic that appears to contain audio but actually contains random bytes. Manual spectral analysis confirmed this — see [`docs/dds_audio_analysis.md`](docs/dds_audio_analysis.md) for the full investigation and test results.
+The Go2 publishes an `/audiosender` DDS topic that appears to contain audio but actually contains random bytes. Manual spectral analysis confirmed this, see [`docs/dds_audio_analysis.md`](docs/dds_audio_analysis.md) for the full investigation and test results.
 
 The Go2 delivers microphone audio exclusively via its **WebRTC connection** as an Opus-encoded audio track at 48 kHz stereo.
 
@@ -57,7 +57,7 @@ go2-audio-node --ros-args -p robot_ip:=192.168.123.161
 # With noise reduction (learns profile from first 2s, then applies)
 go2-audio-node --ros-args -p robot_ip:=192.168.123.161 -p noise_reduce:=true
 
-# Via launch file (requires colcon build first — see ROS 2 Package section)
+# Via launch file (requires colcon build first: see ROS 2 Package section)
 ros2 launch go2_audio audio.launch.py robot_ip:=192.168.123.161 noise_reduce:=true
 ```
 
@@ -66,7 +66,7 @@ ros2 launch go2_audio audio.launch.py robot_ip:=192.168.123.161 noise_reduce:=tr
 1. **Establish a WebRTC connection** to the robot (SDP offer/answer via HTTP)
 2. **Activate the audio channel** by sending `{"type":"aud","data":"on"}` over the SCTP data channel
 3. **Receive Opus audio frames** on the WebRTC audio track
-4. **Decode to PCM** — 48 kHz stereo, 16-bit signed integers, 960 samples per frame
+4. **Decode to PCM**: 48 kHz stereo, 16-bit signed integers, 960 samples per frame
 
 This package uses [`unitree-webrtc-connect`](https://github.com/unitreerobotics/unitree_sdk2_python) which handles WebRTC negotiation and SCTP correctly. Many community Go2 packages use a custom `go2_connection.py` with a broken SCTP data channel where the audio activation message never reaches the robot.
 
@@ -176,11 +176,11 @@ See `pyproject.toml` for the full dependency list.
 - Audio is only available on Go2 **Pro/Edu** models
 
 **Audio is pure noise / white noise**
-- You're probably reading from DDS `/audiosender` — that topic is broken
+- You're probably reading from DDS `/audiosender`: that topic is broken
 - Use this package's WebRTC approach instead
 
 **Very quiet audio / only motor noise**
-- The internal mic is inside the robot body near the motors — significant noise is expected and cannot be fully eliminated
+- The internal mic is inside the robot body near the motors, significant noise is expected and cannot be fully eliminated
 - Enable noise reduction (`noise_reduce:=true`) to reduce steady-state motor hum
 - For speech recognition or other quality-sensitive use cases, use an external USB microphone on a companion computer
 
