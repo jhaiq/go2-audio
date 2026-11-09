@@ -126,6 +126,7 @@ class Go2AudioNode(Node):
         self._conn = UnitreeWebRTCConnection(
             WebRTCConnectionMethod.LocalSTA,
             ip=self._robot_ip,
+            aes_128_key=os.environ.get("UNITREE_AES_128_KEY"),
         )
 
         await self._conn.connect()

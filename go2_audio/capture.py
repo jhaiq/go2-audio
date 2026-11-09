@@ -11,6 +11,7 @@ Usage:
 """
 
 import argparse
+import os
 import asyncio
 import queue
 import signal
@@ -97,9 +98,14 @@ async def run(args):
     capture = AudioCapture(play=args.play, store_frames=store)
 
     print(f"Connecting to Go2 at {args.robot_ip}...")
+    aes_key = os.environ.get("UNITREE_AES_128_KEY")
+    if not aes_key:
+        print("WARNING: UNITREE_AES_128_KEY not set. Connection will fail on Go2 >= 1.1.15.")
+
     conn = UnitreeWebRTCConnection(
         WebRTCConnectionMethod.LocalSTA,
         ip=args.robot_ip,
+        aes_128_key=aes_key,
     )
     await conn.connect()
     print("WebRTC connected")
